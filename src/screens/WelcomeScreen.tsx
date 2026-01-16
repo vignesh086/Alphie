@@ -93,7 +93,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ navigation }) => {
       {/* Footer */}
       <View style={styles.footer}>
         <Text style={styles.footerText}>
-          FDIC Insured • Equal Housing Lender
+          APRA Regulated ADI • Australian Financial Services Licence
         </Text>
       </View>
     </SafeAreaView>

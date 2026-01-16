@@ -29,32 +29,33 @@ type BusinessOnboardingScreenProps = {
 
 const initialFormData: BusinessAccountData = {
   businessName: '',
-  businessType: 'llc',
-  ein: '',
+  businessType: 'company',
+  abn: '',
+  acn: '',
   businessPhone: '',
   businessEmail: '',
   website: '',
   businessStreetAddress: '',
-  businessCity: '',
+  businessSuburb: '',
   businessState: '',
-  businessZipCode: '',
-  businessCountry: 'US',
+  businessPostcode: '',
+  businessCountry: 'AU',
   ownerFirstName: '',
   ownerLastName: '',
   ownerEmail: '',
   ownerPhone: '',
   ownerDateOfBirth: '',
-  ownerSSN: '',
+  ownerTFN: '',
   ownershipPercentage: '',
   industryType: '',
   yearEstablished: '',
   numberOfEmployees: '',
-  annualRevenue: '',
+  annualTurnover: '',
   accountNickname: '',
   initialDeposit: '',
   enablePaperlessStatements: true,
-  enableWireTransfers: false,
-  enableACHPayments: true,
+  enableBPAY: true,
+  enablePayID: true,
 };
 
 export const BusinessOnboardingScreen: React.FC<BusinessOnboardingScreenProps> = ({
@@ -106,6 +107,14 @@ export const BusinessOnboardingScreen: React.FC<BusinessOnboardingScreenProps> =
     }
     if (currentStep === 3 && formData.ownerEmail && !formData.ownerEmail.includes('@')) {
       newErrors.ownerEmail = 'Please enter a valid email address';
+    }
+
+    // Validate ABN is 11 digits
+    if (currentStep === 1 && formData.abn) {
+      const abnDigits = formData.abn.replace(/\D/g, '');
+      if (abnDigits.length !== 11) {
+        newErrors.abn = 'ABN must be 11 digits';
+      }
     }
 
     setErrors(newErrors);

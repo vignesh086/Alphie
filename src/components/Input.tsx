@@ -14,7 +14,7 @@ interface InputProps {
   value: string;
   onChangeText: (text: string) => void;
   placeholder?: string;
-  type?: 'text' | 'email' | 'phone' | 'date' | 'ssn' | 'currency' | 'password';
+  type?: 'text' | 'email' | 'phone' | 'date' | 'tfn' | 'abn' | 'currency' | 'password';
   error?: string;
   required?: boolean;
   disabled?: boolean;
@@ -44,29 +44,49 @@ export const Input: React.FC<InputProps> = ({
   const formatValue = (text: string): string => {
     switch (type) {
       case 'phone':
-        // Format as (XXX) XXX-XXXX
+        // Australian phone format: 0412 345 678 (mobile) or 02 1234 5678 (landline)
         const phoneDigits = text.replace(/\D/g, '').slice(0, 10);
-        if (phoneDigits.length >= 7) {
-          return `(${phoneDigits.slice(0, 3)}) ${phoneDigits.slice(3, 6)}-${phoneDigits.slice(6)}`;
-        } else if (phoneDigits.length >= 4) {
-          return `(${phoneDigits.slice(0, 3)}) ${phoneDigits.slice(3)}`;
-        } else if (phoneDigits.length > 0) {
-          return `(${phoneDigits}`;
+        if (phoneDigits.startsWith('04')) {
+          // Mobile format: 0412 345 678
+          if (phoneDigits.length >= 7) {
+            return `${phoneDigits.slice(0, 4)} ${phoneDigits.slice(4, 7)} ${phoneDigits.slice(7)}`;
+          } else if (phoneDigits.length >= 5) {
+            return `${phoneDigits.slice(0, 4)} ${phoneDigits.slice(4)}`;
+          }
+        } else {
+          // Landline format: 02 1234 5678
+          if (phoneDigits.length >= 6) {
+            return `${phoneDigits.slice(0, 2)} ${phoneDigits.slice(2, 6)} ${phoneDigits.slice(6)}`;
+          } else if (phoneDigits.length >= 3) {
+            return `${phoneDigits.slice(0, 2)} ${phoneDigits.slice(2)}`;
+          }
         }
         return phoneDigits;
 
-      case 'ssn':
-        // Format as XXX-XX-XXXX
-        const ssnDigits = text.replace(/\D/g, '').slice(0, 9);
-        if (ssnDigits.length >= 6) {
-          return `${ssnDigits.slice(0, 3)}-${ssnDigits.slice(3, 5)}-${ssnDigits.slice(5)}`;
-        } else if (ssnDigits.length >= 4) {
-          return `${ssnDigits.slice(0, 3)}-${ssnDigits.slice(3)}`;
+      case 'tfn':
+        // Australian Tax File Number format: XXX XXX XXX (9 digits)
+        const tfnDigits = text.replace(/\D/g, '').slice(0, 9);
+        if (tfnDigits.length >= 7) {
+          return `${tfnDigits.slice(0, 3)} ${tfnDigits.slice(3, 6)} ${tfnDigits.slice(6)}`;
+        } else if (tfnDigits.length >= 4) {
+          return `${tfnDigits.slice(0, 3)} ${tfnDigits.slice(3)}`;
         }
-        return ssnDigits;
+        return tfnDigits;
+
+      case 'abn':
+        // Australian Business Number format: XX XXX XXX XXX (11 digits)
+        const abnDigits = text.replace(/\D/g, '').slice(0, 11);
+        if (abnDigits.length >= 9) {
+          return `${abnDigits.slice(0, 2)} ${abnDigits.slice(2, 5)} ${abnDigits.slice(5, 8)} ${abnDigits.slice(8)}`;
+        } else if (abnDigits.length >= 6) {
+          return `${abnDigits.slice(0, 2)} ${abnDigits.slice(2, 5)} ${abnDigits.slice(5)}`;
+        } else if (abnDigits.length >= 3) {
+          return `${abnDigits.slice(0, 2)} ${abnDigits.slice(2)}`;
+        }
+        return abnDigits;
 
       case 'date':
-        // Format as MM/DD/YYYY
+        // Australian date format: DD/MM/YYYY
         const dateDigits = text.replace(/\D/g, '').slice(0, 8);
         if (dateDigits.length >= 5) {
           return `${dateDigits.slice(0, 2)}/${dateDigits.slice(2, 4)}/${dateDigits.slice(4)}`;
@@ -76,12 +96,12 @@ export const Input: React.FC<InputProps> = ({
         return dateDigits;
 
       case 'currency':
-        // Format as currency
+        // Format as AUD currency
         const currencyDigits = text.replace(/[^0-9.]/g, '');
         if (currencyDigits) {
           const num = parseFloat(currencyDigits);
           if (!isNaN(num)) {
-            return `$${num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+            return `$${num.toLocaleString('en-AU', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
           }
         }
         return text;
@@ -101,7 +121,8 @@ export const Input: React.FC<InputProps> = ({
       case 'email':
         return 'email-address';
       case 'phone':
-      case 'ssn':
+      case 'tfn':
+      case 'abn':
       case 'date':
       case 'currency':
         return 'numeric';

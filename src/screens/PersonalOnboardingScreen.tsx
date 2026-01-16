@@ -33,17 +33,18 @@ const initialFormData: PersonalAccountData = {
   phone: '',
   dateOfBirth: '',
   streetAddress: '',
-  city: '',
+  suburb: '',
   state: '',
-  zipCode: '',
-  country: 'US',
-  ssn: '',
-  idType: 'drivers_license',
+  postcode: '',
+  country: 'AU',
+  tfn: '',
+  idType: 'drivers_licence',
   idNumber: '',
+  idState: '',
   accountNickname: '',
   initialDeposit: '',
   enablePaperlessStatements: true,
-  enableMobileDeposit: true,
+  enablePayID: true,
 };
 
 export const PersonalOnboardingScreen: React.FC<PersonalOnboardingScreenProps> = ({
@@ -91,6 +92,14 @@ export const PersonalOnboardingScreen: React.FC<PersonalOnboardingScreenProps> =
     // Additional validation for email
     if (currentStep === 1 && formData.email && !formData.email.includes('@')) {
       newErrors.email = 'Please enter a valid email address';
+    }
+
+    // Validate Australian mobile number starts with 04
+    if (currentStep === 1 && formData.phone) {
+      const phoneDigits = formData.phone.replace(/\D/g, '');
+      if (!phoneDigits.startsWith('04') && phoneDigits.length > 0) {
+        newErrors.phone = 'Please enter a valid Australian mobile number';
+      }
     }
 
     setErrors(newErrors);

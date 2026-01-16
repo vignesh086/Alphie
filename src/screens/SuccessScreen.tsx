@@ -51,8 +51,9 @@ export const SuccessScreen: React.FC<SuccessScreenProps> = ({
     });
   };
 
-  const accountNumber = `****${Math.floor(1000 + Math.random() * 9000)}`;
-  const routingNumber = '021000089';
+  // Australian bank account details
+  const bsb = `06${Math.floor(1000 + Math.random() * 9000).toString().slice(0, 4)}`;
+  const accountNumber = `${Math.floor(10000000 + Math.random() * 90000000)}`;
 
   return (
     <SafeAreaView style={styles.container}>
@@ -88,7 +89,7 @@ export const SuccessScreen: React.FC<SuccessScreenProps> = ({
             </Text>
             <View>
               <Text style={styles.accountCardTitle}>
-                {accountType === 'personal' ? 'Personal Checking' : 'Business Checking'}
+                {accountType === 'personal' ? 'Everyday Account' : 'Business Transaction'}
               </Text>
               <Text style={styles.accountCardSubtitle}>Active</Text>
             </View>
@@ -98,12 +99,12 @@ export const SuccessScreen: React.FC<SuccessScreenProps> = ({
 
           <View style={styles.accountCardDetails}>
             <View style={styles.accountCardRow}>
-              <Text style={styles.accountCardLabel}>Account Number</Text>
-              <Text style={styles.accountCardValue}>{accountNumber}</Text>
+              <Text style={styles.accountCardLabel}>BSB</Text>
+              <Text style={styles.accountCardValue}>{bsb}</Text>
             </View>
             <View style={styles.accountCardRow}>
-              <Text style={styles.accountCardLabel}>Routing Number</Text>
-              <Text style={styles.accountCardValue}>{routingNumber}</Text>
+              <Text style={styles.accountCardLabel}>Account Number</Text>
+              <Text style={styles.accountCardValue}>{accountNumber}</Text>
             </View>
             <View style={styles.accountCardRow}>
               <Text style={styles.accountCardLabel}>Current Balance</Text>
@@ -123,7 +124,7 @@ export const SuccessScreen: React.FC<SuccessScreenProps> = ({
             <View style={styles.nextStepContent}>
               <Text style={styles.nextStepItemTitle}>Fund Your Account</Text>
               <Text style={styles.nextStepItemDescription}>
-                Transfer money from another bank or deposit a check
+                Transfer money via PayID, Osko, or direct transfer using your BSB and account number
               </Text>
             </View>
           </View>
@@ -133,9 +134,9 @@ export const SuccessScreen: React.FC<SuccessScreenProps> = ({
               <Text style={styles.nextStepNumberText}>2</Text>
             </View>
             <View style={styles.nextStepContent}>
-              <Text style={styles.nextStepItemTitle}>Set Up Direct Deposit</Text>
+              <Text style={styles.nextStepItemTitle}>Set Up PayID</Text>
               <Text style={styles.nextStepItemDescription}>
-                Share your account details with your employer
+                Link your mobile or email for instant payments
               </Text>
             </View>
           </View>
@@ -147,7 +148,7 @@ export const SuccessScreen: React.FC<SuccessScreenProps> = ({
             <View style={styles.nextStepContent}>
               <Text style={styles.nextStepItemTitle}>Order Your Card</Text>
               <Text style={styles.nextStepItemDescription}>
-                Get your debit card delivered in 5-7 business days
+                Get your Visa Debit card delivered in 5-7 business days
               </Text>
             </View>
           </View>

@@ -32,11 +32,22 @@ export const AccountReviewScreen: React.FC<AccountReviewScreenProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
 
-  const formatSSN = (ssn: string) => {
-    if (ssn.length >= 4) {
-      return `***-**-${ssn.slice(-4)}`;
+  const formatTFN = (tfn: string) => {
+    // Mask TFN showing only last 3 digits
+    const digits = tfn.replace(/\D/g, '');
+    if (digits.length >= 3) {
+      return `*** *** ${digits.slice(-3)}`;
     }
-    return '***-**-****';
+    return '*** *** ***';
+  };
+
+  const formatABN = (abn: string) => {
+    // Show ABN partially masked
+    const digits = abn.replace(/\D/g, '');
+    if (digits.length >= 4) {
+      return `** *** *** ${digits.slice(-3)}`;
+    }
+    return '** *** *** ***';
   };
 
   const getPersonalReviewSections = (data: PersonalAccountData): ReviewSection[] => [
@@ -45,7 +56,7 @@ export const AccountReviewScreen: React.FC<AccountReviewScreenProps> = ({
       fields: [
         { label: 'Full Name', value: `${data.firstName} ${data.lastName}` },
         { label: 'Email', value: data.email },
-        { label: 'Phone', value: data.phone },
+        { label: 'Mobile', value: data.phone },
         { label: 'Date of Birth', value: data.dateOfBirth },
       ],
     },
@@ -53,26 +64,27 @@ export const AccountReviewScreen: React.FC<AccountReviewScreenProps> = ({
       title: 'Address',
       fields: [
         { label: 'Street Address', value: data.streetAddress },
-        { label: 'City', value: data.city },
-        { label: 'State', value: data.state },
-        { label: 'ZIP Code', value: data.zipCode },
+        { label: 'Suburb', value: data.suburb },
+        { label: 'State/Territory', value: data.state },
+        { label: 'Postcode', value: data.postcode },
       ],
     },
     {
       title: 'Identity Verification',
       fields: [
-        { label: 'SSN', value: formatSSN(data.ssn) },
+        { label: 'TFN', value: formatTFN(data.tfn) },
         { label: 'ID Type', value: data.idType.replace('_', ' ').replace(/\b\w/g, (l) => l.toUpperCase()) },
+        { label: 'State of Issue', value: data.idState },
         { label: 'ID Number', value: `****${data.idNumber.slice(-4)}` },
       ],
     },
     {
       title: 'Account Preferences',
       fields: [
-        { label: 'Account Nickname', value: data.accountNickname || 'Personal Checking' },
+        { label: 'Account Nickname', value: data.accountNickname || 'Everyday Account' },
         { label: 'Initial Deposit', value: data.initialDeposit || '$0.00' },
         { label: 'Paperless Statements', value: data.enablePaperlessStatements ? 'Enabled' : 'Disabled' },
-        { label: 'Mobile Deposit', value: data.enableMobileDeposit ? 'Enabled' : 'Disabled' },
+        { label: 'PayID', value: data.enablePayID ? 'Enabled' : 'Disabled' },
       ],
     },
   ];
@@ -82,8 +94,9 @@ export const AccountReviewScreen: React.FC<AccountReviewScreenProps> = ({
       title: 'Business Information',
       fields: [
         { label: 'Business Name', value: data.businessName },
-        { label: 'Business Type', value: data.businessType.replace('_', ' ').replace(/\b\w/g, (l) => l.toUpperCase()) },
-        { label: 'EIN', value: data.ein },
+        { label: 'Business Structure', value: data.businessType.replace('_', ' ').replace(/\b\w/g, (l) => l.toUpperCase()) },
+        { label: 'ABN', value: formatABN(data.abn) },
+        { label: 'ACN', value: data.acn || 'N/A' },
         { label: 'Business Email', value: data.businessEmail },
         { label: 'Business Phone', value: data.businessPhone },
         { label: 'Website', value: data.website || 'Not provided' },
@@ -93,9 +106,9 @@ export const AccountReviewScreen: React.FC<AccountReviewScreenProps> = ({
       title: 'Business Address',
       fields: [
         { label: 'Street Address', value: data.businessStreetAddress },
-        { label: 'City', value: data.businessCity },
-        { label: 'State', value: data.businessState },
-        { label: 'ZIP Code', value: data.businessZipCode },
+        { label: 'Suburb', value: data.businessSuburb },
+        { label: 'State/Territory', value: data.businessState },
+        { label: 'Postcode', value: data.businessPostcode },
       ],
     },
     {
@@ -103,9 +116,9 @@ export const AccountReviewScreen: React.FC<AccountReviewScreenProps> = ({
       fields: [
         { label: 'Full Name', value: `${data.ownerFirstName} ${data.ownerLastName}` },
         { label: 'Email', value: data.ownerEmail },
-        { label: 'Phone', value: data.ownerPhone },
+        { label: 'Mobile', value: data.ownerPhone },
         { label: 'Date of Birth', value: data.ownerDateOfBirth },
-        { label: 'SSN', value: formatSSN(data.ownerSSN) },
+        { label: 'TFN', value: formatTFN(data.ownerTFN) },
         { label: 'Ownership', value: `${data.ownershipPercentage}%` },
       ],
     },
@@ -115,17 +128,17 @@ export const AccountReviewScreen: React.FC<AccountReviewScreenProps> = ({
         { label: 'Industry', value: data.industryType.replace('_', ' ').replace(/\b\w/g, (l) => l.toUpperCase()) },
         { label: 'Year Established', value: data.yearEstablished },
         { label: 'Employees', value: data.numberOfEmployees },
-        { label: 'Annual Revenue', value: data.annualRevenue.replace('_', ' - $').replace(/\b\w/g, (l) => l.toUpperCase()) },
+        { label: 'Annual Turnover', value: data.annualTurnover.replace('_', ' - $').replace(/\b\w/g, (l) => l.toUpperCase()) },
       ],
     },
     {
       title: 'Account Preferences',
       fields: [
-        { label: 'Account Nickname', value: data.accountNickname || 'Business Checking' },
+        { label: 'Account Nickname', value: data.accountNickname || 'Business Transaction' },
         { label: 'Initial Deposit', value: data.initialDeposit || '$0.00' },
         { label: 'Paperless Statements', value: data.enablePaperlessStatements ? 'Enabled' : 'Disabled' },
-        { label: 'Wire Transfers', value: data.enableWireTransfers ? 'Enabled' : 'Disabled' },
-        { label: 'ACH Payments', value: data.enableACHPayments ? 'Enabled' : 'Disabled' },
+        { label: 'BPAY', value: data.enableBPAY ? 'Enabled' : 'Disabled' },
+        { label: 'PayID', value: data.enablePayID ? 'Enabled' : 'Disabled' },
       ],
     },
   ];
@@ -216,18 +229,22 @@ export const AccountReviewScreen: React.FC<AccountReviewScreenProps> = ({
           </View>
           <Text style={styles.termsText}>
             I have read and agree to the{' '}
-            <Text style={styles.termsLink}>Terms of Service</Text>,{' '}
-            <Text style={styles.termsLink}>Privacy Policy</Text>, and{' '}
-            <Text style={styles.termsLink}>Electronic Consent Agreement</Text>.
+            <Text style={styles.termsLink}>Terms and Conditions</Text>,{' '}
+            <Text style={styles.termsLink}>Privacy Policy</Text>,{' '}
+            <Text style={styles.termsLink}>Financial Services Guide</Text>, and{' '}
+            <Text style={styles.termsLink}>ePayments Code</Text>.
           </Text>
         </TouchableOpacity>
 
         {/* Disclosure */}
         <View style={styles.disclosureContainer}>
           <Text style={styles.disclosureText}>
-            By submitting this application, you authorize Alphie Banking to verify
-            your identity, check your credit history, and process your application.
-            You certify that all information provided is accurate and complete.
+            By submitting this application, you authorise Alphie Banking to verify
+            your identity in accordance with the Anti-Money Laundering and Counter-Terrorism
+            Financing Act 2006 (AML/CTF Act), check your credit history with credit
+            reporting bodies, and process your application. You certify that all
+            information provided is accurate and complete. Alphie Banking is an
+            Authorised Deposit-taking Institution (ADI) regulated by APRA.
           </Text>
         </View>
       </ScrollView>

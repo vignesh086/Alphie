@@ -12,61 +12,63 @@ export interface PersonalAccountData {
 
   // Step 2: Address
   streetAddress: string;
-  city: string;
+  suburb: string;
   state: string;
-  zipCode: string;
+  postcode: string;
   country: string;
 
   // Step 3: Identity Verification
-  ssn: string;
-  idType: 'drivers_license' | 'passport' | 'state_id';
+  tfn: string; // Tax File Number
+  idType: 'drivers_licence' | 'passport' | 'proof_of_age_card';
   idNumber: string;
+  idState: string; // State of issue for licence/ID
 
   // Step 4: Account Preferences
   accountNickname: string;
   initialDeposit: string;
   enablePaperlessStatements: boolean;
-  enableMobileDeposit: boolean;
+  enablePayID: boolean;
 }
 
 // Business Account Data
 export interface BusinessAccountData {
   // Step 1: Business Info
   businessName: string;
-  businessType: 'sole_proprietor' | 'llc' | 'corporation' | 'partnership' | 'nonprofit';
-  ein: string;
+  businessType: 'sole_trader' | 'partnership' | 'company' | 'trust' | 'nonprofit';
+  abn: string; // Australian Business Number
+  acn: string; // Australian Company Number (optional, for companies)
   businessPhone: string;
   businessEmail: string;
   website: string;
 
   // Step 2: Business Address
   businessStreetAddress: string;
-  businessCity: string;
+  businessSuburb: string;
   businessState: string;
-  businessZipCode: string;
+  businessPostcode: string;
   businessCountry: string;
 
-  // Step 3: Owner/Authorized Signer Info
+  // Step 3: Owner/Authorised Signer Info
   ownerFirstName: string;
   ownerLastName: string;
   ownerEmail: string;
   ownerPhone: string;
   ownerDateOfBirth: string;
-  ownerSSN: string;
+  ownerTFN: string;
   ownershipPercentage: string;
 
   // Step 4: Business Details
   industryType: string;
   yearEstablished: string;
   numberOfEmployees: string;
-  annualRevenue: string;
+  annualTurnover: string;
 
   // Step 5: Account Preferences
   accountNickname: string;
   initialDeposit: string;
   enablePaperlessStatements: boolean;
-  enableWireTransfers: boolean;
-  enableACHPayments: boolean;
+  enableBPAY: boolean;
+  enablePayID: boolean;
 }
 
 // Navigation Types
@@ -96,7 +98,7 @@ export interface FormField {
   key: string;
   label: string;
   placeholder: string;
-  type: 'text' | 'email' | 'phone' | 'date' | 'ssn' | 'currency' | 'select' | 'toggle';
+  type: 'text' | 'email' | 'phone' | 'date' | 'tfn' | 'abn' | 'currency' | 'select' | 'toggle';
   required: boolean;
   options?: { label: string; value: string }[];
 }
